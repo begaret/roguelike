@@ -1,29 +1,34 @@
-#include "options.h"
 #include "terminal.h"
+#include "options.h"
+#include "main_menu.h"
+
+void quit(void)
+{
+	terminal_exit();
+	options_exit();
+
+	atexit(quit);
+}
+
+void init(void)
+{
+	options_init();
+	terminal_init();
+}
 
 int main(int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
 
-	options_init();
-	terminal_init();
-
+	init();
 	while (1) {
-		int k = terminal_getc();
-		if (k == -2)
+		int o = main_menu();
+		if (o == 'q') {
 			break;
-
-		terminal_clear();
-		terminal_color(C_WHITE, C_LRED);
-		terminal_puts(0, 0, "hello, world");
-		terminal_color(C_WHITE, C_BLACK);
-		terminal_refresh();
+		}
 	}
 
-	terminal_exit();
-	options_exit();
-
-	return 0;
+	exit(EXIT_SUCCESS);
 }
 
