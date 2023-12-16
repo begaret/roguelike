@@ -16,6 +16,8 @@ static struct {
 	unsigned				display_y;
 	unsigned				tileset_x;
 	unsigned				tileset_y;
+	unsigned				window_x;
+	unsigned				window_y;
 
 	color_t					fore;
 	color_t					back;
@@ -38,15 +40,18 @@ void terminal_init(void)
 	terminal.tileset_x = al_get_bitmap_width(terminal.tileset);
 	terminal.tileset_y = al_get_bitmap_height(terminal.tileset);
 
+	terminal.window_x = atoi(options_get("window_x"));
+	terminal.window_y = atoi(options_get("window_y"));
+
 	if (atoi(options_get("fullscreen"))) {
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 	} else {
 #ifdef __APPLE__
-	terminal.display_x = atoi(options_get("window_x")) * (terminal.tileset_x / 32) * 2;
-	terminal.display_y = atoi(options_get("window_y")) * (terminal.tileset_y / 8) * 2;
+	terminal.display_x = terminal.window_x * (terminal.tileset_x / 32) * 2;
+	terminal.display_y = terminal.window_y * (terminal.tileset_y / 8) * 2;
 #else
-	terminal.display_x = atoi(options_get("window_x")) * (terminal.tileset_x / 32);
-	terminal.display_y = atoi(options_get("window_y")) * (terminal.tileset_y / 8);
+	terminal.display_x = terminal.window_x * (terminal.tileset_x / 32);
+	terminal.display_y = terminal.window_y * (terminal.tileset_y / 8);
 #endif
 	}
 
@@ -58,6 +63,14 @@ void terminal_init(void)
 	if (atoi(options_get("fullscreen"))) {
 		terminal.display_x = al_get_display_width(terminal.display);
 		terminal.display_y = al_get_display_height(terminal.display);
+		
+#ifdef __APPLE__
+		terminal.window_x = terminal.display_x / (terminal.tileset_x / 32) / 2;
+		terminal.window_y = terminal.display_y / (terminal.tileset_y / 8)  / 2;
+#else
+		terminal.window_x = terminal.display_x / (terminal.tileset_x / 32);
+		terminal.window_y = terminal.display_y / (terminal.tileset_y / 8);
+#endif
 	}
 
 #ifdef __APPLE__
@@ -173,10 +186,42 @@ void terminal_putc(int x, int y, char c)
 	);
 }
 
+static color_t ch_to_color(char c)
+{
+	switch (c) {
+		case 'k':	return C_BLACK;
+		case 'b':	return C_BLUE;
+		case 'g':	return C_GREEN;
+		case 'c':	return C_CYAN;
+		case 'r':	return C_RED;
+		case 'm':	return C_MAGENTA;
+		case 'y':	return C_BROWN;
+		case 'w':	return C_LGRAY;	
+		case 'K':	return C_GRAY;
+		case 'B':	return C_LBLUE;
+		case 'G':	return C_LGREEN;
+		case 'C':	return C_LCYAN;
+		case 'R':	return C_LRED;
+		case 'M':	return C_LMAGENTA;
+		case 'Y':	return C_YELLOW;
+		case 'W':	return C_WHITE;
+		default:
+			return C_BLACK;
+	}
+}
+
 void terminal_puts(int x, int y, char *s)
 {
 	while (*s) {
-		terminal_putc(x++, y, *s++);
+		if (*s == '&') {
+			if (*++s == '&') {
+				terminal_putc(x++, y, *s++);
+			} else {
+				terminal_color(ch_to_color(*s++), terminal.back);
+			}
+		} else {
+			terminal_putc(x++, y, *s++);
+		}
 	}
 }
 
@@ -192,14 +237,38 @@ void terminal_printf(int x, int y, char *fmt, ...)
 	terminal_puts(x, y, s);
 }
 
+void terminal_border(int x, int y, int w, int h)
+{
+	if (w == -1) {
+		w = terminal.window_x - 1;
+	}
+
+	if (h == -1) {
+		h = terminal.window_y - 1;
+	}
+
+	terminal_putc(x, y, '\xDA');
+	terminal_putc(w, y, '\xBF');
+	terminal_putc(w, h, '\xD9');
+	terminal_putc(x, h, '\xC0');
+	for (int i = x + 1; i < x + w; i++) {
+		terminal_putc(i, y, '\xC4');
+		terminal_putc(i, h, '\xC4');
+	}
+
+	for (int i = y + 1; i < y + h; i++) {
+		terminal_putc(x, i, '\xB3');
+		terminal_putc(w, i, '\xB3');
+	}
+}
+
 static int convert_keycode(int code)
 {
 	switch (code) {
-		case ALLEGRO_KEY_LEFT:	return K_LEFT;
-		case ALLEGRO_KEY_RIGHT:	return K_RIGHT;
-		case ALLEGRO_KEY_UP:	return K_UP;
-		case ALLEGRO_KEY_DOWN:	return K_DOWN;
-		case ALLEGRO_KEY_ENTER: return K_ENTER;
+		case ALLEGRO_KEY_LEFT:		return K_LEFT;
+		case ALLEGRO_KEY_RIGHT:		return K_RIGHT;
+		case ALLEGRO_KEY_UP:		return K_UP;
+		case ALLEGRO_KEY_DOWN:		return K_DOWN;
 		default:
 			return 0;
 	}
@@ -210,6 +279,7 @@ static int convert_unicode(int code)
 	switch (code) {	
 		case 0x09: return K_TAB;
 		case 0x0D: return K_ENTER;
+		case 0x1B: return K_ESCAPE;
 		case 0x7F: return K_DELETE;
 
 		case 0xA7: return 0x15;	// §
@@ -251,11 +321,11 @@ int terminal_getc(void)
 void terminal_size(unsigned *w, unsigned *h)
 {
 	if (w) {
-		*w = terminal.display_x / (terminal.tileset_x / 32) / 2;
+		*w = terminal.window_x;
 	}
 
 	if (h) {
-		*h = terminal.display_y / (terminal.tileset_y / 8) / 2;
+		*h = terminal.window_y;
 	}
 }
 

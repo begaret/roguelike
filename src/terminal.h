@@ -17,6 +17,7 @@ enum key_t
 	K_ENTER		= 0x104,
 	K_TAB		= 0x105,
 	K_DELETE	= 0x106,
+	K_ESCAPE	= 0x107,
 };
 
 void terminal_init(void);
@@ -34,6 +35,8 @@ void terminal_putc(int x, int y, char c);
 void terminal_puts(int x, int y, char *s);
 
 void terminal_printf(int x, int y, char *fmt, ...);
+
+void terminal_border(int x, int y, int w, int h);
 
 int terminal_getc(void);
 

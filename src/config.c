@@ -24,6 +24,10 @@ static void parse_line(config_t *cfg, char *p)
 	char v[128];
 
 	while (*q) {
+		if (*q == '#') {	// comment
+			return;
+		}
+
 		if (isalpha(*q) || *q == '_') {
 			char *a = q;
 			while (isalpha(*q) || *q == '_') {
@@ -68,12 +72,11 @@ static void parse_line(config_t *cfg, char *p)
 void config_load(config_t *cfg, FILE *fp)
 {
 	ln = 0;
-	char *line = calloc(1, 256);
+	static char line[256];
 	while (fgets(line, 256, fp) != NULL) {
 		parse_line(cfg, line);
+		memset(line, 0, 256);
 	}
-
-	free(line);
 }
 
 void config_free(config_t *cfg)

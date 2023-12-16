@@ -1,1 +1,5 @@
 * add error handling
+
+----- future -----
+scrolling map
+overworld

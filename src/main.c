@@ -1,6 +1,8 @@
 #include "terminal.h"
 #include "options.h"
+#include "options_menu.h"
 #include "main_menu.h"
+#include "help_menu.h"
 
 void quit(void)
 {
@@ -26,6 +28,18 @@ int main(int argc, char *argv[])
 		int o = main_menu();
 		if (o == 'q') {
 			break;
+		}
+
+		switch (o) {
+			case 'n': break;
+			case 'l': break;
+			case 'w': break;
+			case 'o': {
+				options_menu(); 
+			} break;
+			case '?': {
+				help_menu();
+			} break;
 		}
 	}
 
