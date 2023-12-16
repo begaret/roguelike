@@ -1,0 +1,6 @@
+int/
+bin/
+colors.txt
+curses.bmp
+options.txt
+.DS_Store
