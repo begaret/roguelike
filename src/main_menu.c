@@ -7,23 +7,22 @@ int main_menu(void)
 {
 	int sel = 0;
 	while (1) {
-		terminal_clear();
+		tclear();
 
-		terminal_puts(1, 1, "&Wroguelike &wv0.0.0");
+		tputs(1, 1, "&Wroguelike &wv0.0.0");
+		tcolor(C_YELLOW, C_BLACK);
+		tputc(1, 3 + sel, '\x10');
+
+		tcolor(C_LGRAY, C_BLACK);
+		tputs(1 + (sel == 0), 3, "n - new game");
+		tputs(1 + (sel == 1), 4, "l - load game");
+		tputs(1 + (sel == 2), 5, "o - options");
+		tputs(1 + (sel == 3), 6, "? - help");
+		tputs(1 + (sel == 4), 7, "q - quit");
+
+		tflush();
 		
-		terminal_color(C_YELLOW, C_BLACK);
-		terminal_putc(1, 3 + sel, '\x10');
-
-		terminal_color(C_WHITE, C_BLACK);
-		terminal_puts(1 + (sel == 0), 3, "n - new game");
-		terminal_puts(1 + (sel == 1), 4, "l - load game");
-		terminal_puts(1 + (sel == 2), 5, "o - options");
-		terminal_puts(1 + (sel == 3), 6, "? - help");
-		terminal_puts(1 + (sel == 4), 7, "q - quit");
-
-		terminal_refresh();
-		
-		int k = terminal_getc();
+		int k = tgetc();
 		if (k == K_DOWN) {
 			sel = (sel + 1) % 5;
 		} else if (k == K_UP) {

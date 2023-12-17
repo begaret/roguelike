@@ -3,7 +3,7 @@
 #include "monster.h"
 #include "terrain.h"
 
-#define MAP_SIZE 64
+#define MAP_SIZE 128
 
 typedef struct map_t map_t;
 struct map_t

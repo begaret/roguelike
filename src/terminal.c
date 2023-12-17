@@ -23,7 +23,10 @@ static struct {
 	color_t					back;
 } terminal;
 
-void terminal_init(void)
+int tx = 0;
+int ty = 0;
+
+void tinit(void)
 {
 	if (al_init() == 0 || al_init_image_addon() == 0) {
 		return;
@@ -107,9 +110,12 @@ void terminal_init(void)
 
 	al_set_target_bitmap(terminal.buffer);
 	al_hold_bitmap_drawing(1);
+
+	tx = terminal.window_x;
+	ty = terminal.window_y;
 }
 
-void terminal_exit(void)
+void texit(void)
 {
 	al_destroy_event_queue(terminal.queue);
 	al_destroy_timer(terminal.timer);
@@ -118,7 +124,7 @@ void terminal_exit(void)
 	al_destroy_bitmap(terminal.tileset);
 }
 
-void terminal_clear(void)
+void tclear(void)
 {
 	unsigned color = palette_get(terminal.back);
 	al_clear_to_color(al_map_rgb(
@@ -128,7 +134,7 @@ void terminal_clear(void)
 	);
 }
 
-void terminal_refresh(void)
+void tflush(void)
 {
 	al_hold_bitmap_drawing(0);
 	al_set_target_backbuffer(terminal.display);
@@ -146,13 +152,13 @@ void terminal_refresh(void)
 	al_hold_bitmap_drawing(1);
 }
 
-void terminal_color(color_t fore, color_t back)
+void tcolor(color_t fore, color_t back)
 {
 	terminal.fore = fore;
 	terminal.back = back;
 }
 
-void terminal_putc(int x, int y, char c)
+void tputc(int x, int y, char c)
 {
 	if (x < 0 || x >= (int)terminal.window_x
 	 || y < 0 || y >= (int)terminal.window_y) {
@@ -216,7 +222,7 @@ static color_t ch_to_color(char c)
 	}
 }
 
-void terminal_puts(int x, int y, char *s)
+void tputs(int x, int y, char *s)
 {
 	int ac = 0;
 	char *p = s;
@@ -229,17 +235,17 @@ void terminal_puts(int x, int y, char *s)
 	while (*s) {
 		if (*s == '&') {
 			if (*++s == '&') {
-				terminal_putc(x++, y, *s++);
+				tputc(x++, y, *s++);
 			} else {
-				terminal_color(ch_to_color(*s++), terminal.back);
+				tcolor(ch_to_color(*s++), terminal.back);
 			}
 		} else {
-			terminal_putc(x++, y, *s++);
+			tputc(x++, y, *s++);
 		}
 	}
 }
 
-void terminal_printf(int x, int y, char *fmt, ...)
+void tprintf(int x, int y, char *fmt, ...)
 {
 	static char s[256];
 
@@ -248,10 +254,10 @@ void terminal_printf(int x, int y, char *fmt, ...)
 	vsnprintf(s, 255, fmt, args);
 	va_end(args);
 
-	terminal_puts(x, y, s);
+	tputs(x, y, s);
 }
 
-void terminal_border(int x, int y, int w, int h)
+void tborder(int x, int y, int w, int h)
 {
 	if (w == -1) {
 		w = terminal.window_x - 1;
@@ -269,18 +275,24 @@ void terminal_border(int x, int y, int w, int h)
 		y = terminal.window_y / 2 - h / 2;
 	}
 
-	terminal_putc(x    , y    , '\xDA');
-	terminal_putc(x + w, y    , '\xBF');
-	terminal_putc(x + w, y + h, '\xD9');
-	terminal_putc(x    , y + h, '\xC0');
+	tputc(x    , y    , '\xDA');
+	tputc(x + w, y    , '\xBF');
+	tputc(x + w, y + h, '\xD9');
+	tputc(x    , y + h, '\xC0');
 	for (int i = x + 1; i < x + w; i++) {
-		terminal_putc(i, y    , '\xC4');
-		terminal_putc(i, y + h, '\xC4');
+		tputc(i, y    , '\xC4');
+		tputc(i, y + h, '\xC4');
 	}
 
 	for (int i = y + 1; i < y + h; i++) {
-		terminal_putc(x    , i, '\xB3');
-		terminal_putc(x + w, i, '\xB3');
+		tputc(x    , i, '\xB3');
+		tputc(x + w, i, '\xB3');
+	}
+
+	for (int X = x + 1; X < x + w; X++) {
+		for (int Y = y + 1; Y < y + h; Y++) {
+			tputc(X, Y, ' ');
+		}
 	}
 }
 
@@ -318,13 +330,13 @@ static int convert_unicode(int code)
 	}
 }
 
-int terminal_getc(void)
+int tgetc(void)
 {
 	ALLEGRO_EVENT event;
 	al_wait_for_event(terminal.queue, &event);
 
 	if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-		terminal_exit();
+		texit();
 		exit(EXIT_SUCCESS);
 	} else if (event.type == ALLEGRO_EVENT_KEY_CHAR) {
 		int k = event.keyboard.unichar;
@@ -338,16 +350,5 @@ int terminal_getc(void)
 	}
 
 	return K_ERR;
-}
-
-void terminal_size(unsigned *w, unsigned *h)
-{
-	if (w) {
-		*w = terminal.window_x;
-	}
-
-	if (h) {
-		*h = terminal.window_y;
-	}
 }
 

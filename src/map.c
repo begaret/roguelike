@@ -9,11 +9,7 @@ void generate_map(map_t *m)
 	m->m = NULL;
 	
 	for (int i = 0; i < MAP_SIZE * MAP_SIZE; i++) {
-		m->t[i] = (terrain_t){"t_grass"};
-	}
-
-	for (int i = 8 * 8; i < (8 + 8) * (8 + 8); i++) {
-		m->t[i] = (terrain_t){"t_bush"};
+		m->t[i] = (rand() % 2) ? (terrain_t){"t_grass"} : (terrain_t){"t_bush"};
 	}
 }
 

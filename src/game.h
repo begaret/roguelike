@@ -15,5 +15,3 @@ void draw(void);
 
 void update(void);
 
-void run(void);
-

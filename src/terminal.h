@@ -20,25 +20,26 @@ enum key_t
 	K_ESCAPE	= 0x107,
 };
 
-void terminal_init(void);
+extern int tx;
+extern int ty;
 
-void terminal_exit(void);
+void tinit(void);
 
-void terminal_clear(void);
+void texit(void);
 
-void terminal_refresh(void);
+void tclear(void);
 
-void terminal_color(color_t fore, color_t back);
+void tflush(void);
 
-void terminal_putc(int x, int y, char c);
+void tcolor(color_t fore, color_t back);
 
-void terminal_puts(int x, int y, char *s);
+void tputc(int x, int y, char c);
 
-void terminal_printf(int x, int y, char *fmt, ...);
+void tputs(int x, int y, char *s);
 
-void terminal_border(int x, int y, int w, int h);
+void tprintf(int x, int y, char *fmt, ...);
 
-int terminal_getc(void);
+void tborder(int x, int y, int w, int h);
 
-void terminal_size(int *w, int *h);
+int tgetc(void);
 

@@ -19,29 +19,29 @@ static void load_data(void)
 		{strdup("t_bush"),	C_GREEN,	C_BLACK, '#', 0}
 	};
 
-	terminal_clear();
+	tclear();
 
-	terminal_color(C_WHITE, C_BLACK);
-	terminal_border(0, 0, -1, -1);
-	terminal_puts(-1, 0, "\xAE &Yloading&W \xAF");
+	tcolor(C_WHITE, C_BLACK);
+	tborder(0, 0, -1, -1);
+	tputs(-1, 0, "\xAE &Yloading&W \xAF");
 
-	terminal_puts(2, 2, "&Cloading monsters");
+	tputs(2, 2, "&Cloading monsters");
 	for (int i = 0; i < 1; i++) {
 		mdata_t data = md[i];
 
-		terminal_color(data.color1, data.color2);
-		terminal_putc(2 + i, 3, data.tile);
-		terminal_refresh();
+		tcolor(data.color1, data.color2);
+		tputc(2 + i, 3, data.tile);
+		tflush();
 		data_add_mdata(data);
 	}
 
-	terminal_puts(2, 5, "&Cloading terrain");
+	tputs(2, 5, "&Cloading terrain");
 	for (int i = 0; i < 2; i++) {
 		tdata_t data = td[i];
 
-		terminal_color(data.color1, data.color2);
-		terminal_putc(2 + i, 6, data.tile);
-		terminal_refresh();
+		tcolor(data.color1, data.color2);
+		tputc(2 + i, 6, data.tile);
+		tflush();
 		data_add_tdata(data);
 	}
 }
@@ -69,68 +69,23 @@ void setup(int load)
 
 	load ? load_save() : make_save();
 
-	// run();
 	while (1) {
-		int k = terminal_getc();
-		if (k == K_ESCAPE)
+		draw();	
+
+		int k = tgetc();
+		if (k == K_ESCAPE) {
+			free_map(&m);
 			break;
-	}
-}
-
-void run(void)
-{
-	int w, h;
-	terminal_size(&w, &h);
-	while (1) {
-		int x1 = p.x - w / 2;
-		int y1 = p.y - h / 2;
-		int x2 = x1 + w;
-		int y2 = y1 + h;
-
-		terminal_clear();
-		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				if (x < 0 || x >= MAP_SIZE 
-				 || y < 0 || y >= MAP_SIZE)
-					continue;
-
-				terrain_t t = map_get_terrain(&m, x, y);
-				tdata_t *data = data_get_tdata(t.id);
-				if (data) {
-					terminal_color(data->color1, data->color2);
-					terminal_putc(x - x1, y - y1, data->tile);
-				} else {
-					terminal_color(C_LGRAY, C_BLACK);
-					terminal_putc(x - x1, y - y1, '?');
-				}
-			}
-		}
-
-		mdata_t *data = data_get_mdata(p.id);
-		if (data) {
-			terminal_color(data->color1, data->color2);
-			terminal_putc(w / 2, h / 2, data->tile);
-		} else {
-			terminal_color(C_LGRAY, C_BLACK);
-			terminal_putc(w / 2, h / 2, '?');
-		}
-
-		terminal_refresh();
-
-		int k = terminal_getc();
-		if (k == K_LEFT) {
-			p.x--;
-		} else if (k == K_RIGHT) {
-			p.x++;
-		} else if (k == K_UP) {
-			p.y--;
-		} else if (k == K_DOWN) {
-			p.y++;
-		} else if (k == K_ESCAPE) {
-			data_exit();
-			free_map(&m);	// TODO: move
-			return;
-		}
+		} switch (k) {
+			case 'y':	p.y--;	p.x--;	break;
+			case 'u':	p.y--;	p.x++;	break;
+			case 'b':	p.y++;	p.x--;	break;
+			case 'n':	p.y++;	p.x++;	break;
+			case 'h':	p.x--;	break;
+			case 'l':	p.x++;	break;
+			case 'k':	p.y--;	break;
+			case 'j':	p.y++;	break;
+		}	
 	}
 }
 
@@ -139,8 +94,46 @@ void update(void)
 
 }
 
+static void draw_menu(void)
+{
+	tcolor(C_WHITE, C_BLACK);
+	tborder(tx - 32, 0, 32 - 1, ty - 1);
+	tborder(0, ty - 8, tx - 33, 7);
+}
+
 void draw(void)
 {
+	tclear();
 
+	int w = tx - 32;
+	int h = ty - 8;
+
+	// draw map
+	int cx = (p.x < w / 2) ? 0 : p.x - w / 2;
+	int cy = (p.y < h / 2) ? 0 : p.y - h / 2;
+	p.x < MAP_SIZE - w / 2 ?: (cx = MAP_SIZE - w);
+	p.y < MAP_SIZE - h / 2 ?: (cy = MAP_SIZE - h);
+	for (int x = 0; x < w; x++) {
+		for (int y = 0; y < h; y++) {
+			int mx = x + cx;
+			int my = y + cy;
+			if (mx < 0 || my < 0
+			 || mx >= MAP_SIZE
+			 || my >= MAP_SIZE)
+				continue;
+
+			tdata_t *data = data_get_tdata(map_get_terrain(&m, mx, my).id);
+			tcolor(data->color1, data->color2);
+			tputc(x, y, data->tile);	
+		}
+	}
+
+	mdata_t *pdata = data_get_mdata(p.id);
+	tcolor(pdata->color1, pdata->color2);
+	tputc(p.x - cx, p.y - cy, pdata->tile);
+
+	draw_menu();
+
+	tflush();
 }
 

@@ -6,24 +6,21 @@
 
 int popup_yn(char *m)
 {
-	unsigned win_y;
-	terminal_size(NULL, &win_y);
-
 	int w = strlen(m) + 4;
 	w > 16 ?: (w = 16);
 	int h = 1 + 3;
 
-	int y = win_y / 2 - h / 2;
+	int y = ty / 2 - h / 2;
 	while (1) {
-		terminal_color(C_WHITE, C_BLACK);
-		terminal_border(-1, -1, w, h);
+		tcolor(C_WHITE, C_BLACK);
+		tborder(-1, -1, w, h);
 		
-		terminal_puts(-1, y + 4, "\xAE &Yy/n&W \xAF");
-		terminal_puts(-1, y + 2, m);
+		tputs(-1, y + 4, "\xAE &Yy/n&W \xAF");
+		tputs(-1, y + 2, m);
 
-		terminal_refresh();
+		tflush();
 
-		int k = terminal_getc();
+		int k = tgetc();
 		if (k == 'y' || k == K_ENTER) {
 			return 1;
 		}
@@ -36,28 +33,25 @@ int popup_yn(char *m)
 
 char *popup_s(char *m)
 {
-	unsigned win_y;
-	terminal_size(NULL, &win_y);
-
 	int w = strlen(m) + 2 + 4;
 	w > 16 ?: (w = 16);
 	int h = 1 + 3;
 
-	int y = win_y / 2 - h / 2;
+	int y = ty / 2 - h / 2;
 	
 	static char s[128];
 	memset(s, 0, 128);
 
 	int i = 0;
 	while (1) {
-		terminal_color(C_WHITE, C_BLACK);
-		terminal_border(-1, -1, w + i, h);
+		tcolor(C_WHITE, C_BLACK);
+		tborder(-1, -1, w + i, h);
 
-		terminal_printf(-1, y + 2, "%s: %s", m, s);
+		tprintf(-1, y + 2, "%s: %s", m, s);
 
-		terminal_refresh();
+		tflush();
 
-		int k = terminal_getc();
+		int k = tgetc();
 		if (k >= 0 && k < 0x100 && i < 127) {
 			s[i++] = k;
 		} else if (k == K_DELETE && i > 0) {

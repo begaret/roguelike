@@ -5,17 +5,17 @@
 void help_menu(void)
 {
 	while (1) {
-		terminal_clear();
+		tclear();
 
-		terminal_color(C_WHITE, C_BLACK);
-		terminal_border(0, 0, -1, -1);
-		terminal_puts(-1, 0, "\xAE &Yhelp&W \xAF");
+		tcolor(C_WHITE, C_BLACK);
+		tborder(0, 0, -1, -1);
+		tputs(-1, 0, "\xAE &Yhelp&W \xAF");
 
-		terminal_printf(2, 2, "&YTODO");
+		tprintf(2, 2, "&YTODO");
 
-		terminal_refresh();
+		tflush();
 		
-		int k = terminal_getc();
+		int k = tgetc();
 		if (k == K_ESCAPE) {
 			return;
 		}

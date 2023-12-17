@@ -16,24 +16,30 @@ void options_menu(void)
 	int sel = 0;
 
 	while (1) {
-		terminal_clear();
+		tclear();
 
-		terminal_color(C_WHITE, C_BLACK);
-		terminal_border(0, 0, -1, -1);
-		terminal_puts(-1, 0, "\xAE &Yoptions&W \xAF");
+		tcolor(C_WHITE, C_BLACK);
+		tborder(0, 0, -1, -1);
+		tputs(-1, 0, "\xAE &Yoptions&W \xAF");
 
-		terminal_printf(2 + (sel == 0), 2, "&Wtileset        -   &Y%s", tileset);
-		terminal_printf(2 + (sel == 1), 3, "&Wpalette        -   &Y%s", palette);
-		terminal_printf(2 + (sel == 2), 5, "&Wwindow_x       -   &Y%s", window_x);
-		terminal_printf(2 + (sel == 3), 6, "&Wwindow_y       -   &Y%s", window_y);
-		terminal_printf(2 + (sel == 4), 7, "&Wfullscreen     -   &Y%s", fullscreen);
+		tprintf(2 + (sel == 0), 2, "&wtileset");
+		tprintf(2 + (sel == 1), 3, "&wpalette");
+		tprintf(2 + (sel == 2), 5, "&wwindow_x");
+		tprintf(2 + (sel == 3), 6, "&wwindow_y");
+		tprintf(2 + (sel == 4), 7, "&wfullscreen");
 
-		terminal_color(C_YELLOW, C_BLACK);
-		terminal_putc(2, 2 + sel + (sel + 1) / 3, '\x10');
+		tprintf(18, 2, "&W-   &Y%s", tileset);
+		tprintf(18, 3, "&W-   &Y%s", palette);
+		tprintf(18, 5, "&W-   &Y%s", window_x);
+		tprintf(18, 6, "&W-   &Y%s", window_y);
+		tprintf(18, 7, "&W-   &Y%s", fullscreen);
 
-		terminal_refresh();
+		tcolor(C_YELLOW, C_BLACK);
+		tputc(2, 2 + sel + (sel + 1) / 3, '\x10');
+
+		tflush();
 		
-		int k = terminal_getc();
+		int k = tgetc();
 		if (k == K_DOWN) {
 			sel = (sel + 1) % 5;
 		} else if (k == K_UP) {

@@ -7,14 +7,14 @@
 
 void quit(void)
 {
-	terminal_exit();
+	texit();
 	options_exit();
 }
 
 void init(void)
 {
 	options_init();
-	terminal_init();
+	tinit();
 
 	atexit(quit);
 }
