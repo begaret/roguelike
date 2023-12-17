@@ -1,10 +1,10 @@
 int/
 bin/
+*.bmp
+*.png
 colors.txt
-curses.bmp
 bleak.txt
 bright.txt
-cp437.png
 tarot.txt
 options.txt
 .DS_Store

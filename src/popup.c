@@ -15,20 +15,20 @@ int popup_yn(char *m)
 
 	int y = win_y / 2 - h / 2;
 	while (1) {
-		terminal_clear();
+		terminal_color(C_WHITE, C_BLACK);
 		terminal_border(-1, -1, w, h);
 		
-		terminal_puts(-1, y + 4, "[ &Yy/n&W ]");
+		terminal_puts(-1, y + 4, "\xAE &Yy/n&W \xAF");
 		terminal_puts(-1, y + 2, m);
 
 		terminal_refresh();
 
 		int k = terminal_getc();
-		if (k == 'y') {
+		if (k == 'y' || k == K_ENTER) {
 			return 1;
 		}
 
-		if (k == 'n') {
+		if (k == 'n' || k == K_ESCAPE) {
 			return 0;
 		}
 	}
@@ -50,9 +50,9 @@ char *popup_s(char *m)
 
 	int i = 0;
 	while (1) {
-		terminal_clear();
+		terminal_color(C_WHITE, C_BLACK);
 		terminal_border(-1, -1, w + i, h);
-		
+
 		terminal_printf(-1, y + 2, "%s: %s", m, s);
 
 		terminal_refresh();

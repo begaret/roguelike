@@ -40,5 +40,5 @@ void terminal_border(int x, int y, int w, int h);
 
 int terminal_getc(void);
 
-void terminal_size(unsigned *w, unsigned *h);
+void terminal_size(int *w, int *h);
 

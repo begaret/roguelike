@@ -1,4 +1,6 @@
 * add error handling
+* fix & in text input
+* redo popup/ui
 
 ----- future -----
 scrolling map

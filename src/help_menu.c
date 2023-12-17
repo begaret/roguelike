@@ -9,7 +9,7 @@ void help_menu(void)
 
 		terminal_color(C_WHITE, C_BLACK);
 		terminal_border(0, 0, -1, -1);
-		terminal_printf(-1, 0, "[ &Yhelp&W ]");
+		terminal_printf(-1, 0, "\xAE &Yhelp&W \xAF");
 
 		terminal_printf(2, 2, "&YTODO");
 

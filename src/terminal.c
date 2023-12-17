@@ -210,8 +210,9 @@ static color_t ch_to_color(char c)
 		case 'M':	return C_LMAGENTA;
 		case 'Y':	return C_YELLOW;
 		case 'W':	return C_WHITE;
+		case '*':	return rand() % 0x10;
 		default:
-			return C_BLACK;
+			return C_GRAY;
 	}
 }
 

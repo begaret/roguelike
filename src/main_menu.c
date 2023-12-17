@@ -1,5 +1,6 @@
 #include "main_menu.h"
 
+#include "popup.h"
 #include "terminal.h"
 
 int main_menu(void)
@@ -41,6 +42,9 @@ int main_menu(void)
 				|| k == '?'
 				|| k == 'q') {
 			return k;
+		} else if (k == K_ESCAPE) {
+			if (popup_yn("really quit?"))
+				return 'q';
 		}
 	}
 }
