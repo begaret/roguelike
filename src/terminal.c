@@ -46,7 +46,7 @@ void topen(void)
 	terminal.window_x = atoi(options_get("window_x"));
 	terminal.window_y = atoi(options_get("window_y"));
 
-	if (atoi(options_get("fullscreen"))) {
+	if (!atoi(options_get("windowed"))) {
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 	} else {
 #ifdef __APPLE__
@@ -63,7 +63,7 @@ void topen(void)
 		return;
 	}
 
-	if (atoi(options_get("fullscreen"))) {
+	if (!atoi(options_get("windowed"))) {
 		terminal.display_x = al_get_display_width(terminal.display);
 		terminal.display_y = al_get_display_height(terminal.display);
 		

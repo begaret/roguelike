@@ -11,7 +11,7 @@ void options_menu(void)
 		{"palette",		NULL},
 		{"window_x",	NULL},
 		{"window_y",	NULL},
-		{"fullscreen",	NULL},
+		{"windowed",	NULL},
 	};
 
 	int changed = 0;

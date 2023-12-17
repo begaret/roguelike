@@ -75,12 +75,7 @@ void setup(int load)
 		draw();	
 
 		int k = tgetc();
-		if (k == K_ESCAPE) {
-			if (pause_menu() == 'q') {
-				end();
-				break;
-			}
-		} switch (k) {
+		switch (k) {
 			case 'y':	p.y--;	p.x--;	break;
 			case 'u':	p.y--;	p.x++;	break;
 			case 'b':	p.y++;	p.x--;	break;
@@ -89,8 +84,16 @@ void setup(int load)
 			case 'l':	p.x++;	break;
 			case 'k':	p.y--;	break;
 			case 'j':	p.y++;	break;
+			case K_ESCAPE: {
+				if (pause_menu() == 'q') {
+					goto end;
+				}
+			} break; 
 		}	
 	}
+
+end:
+	end();
 }
 
 void end(void)

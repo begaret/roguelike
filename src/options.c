@@ -2,11 +2,11 @@
 
 #include "config.h"
 
+#define DEFAULT_TILESET  "curses.bmp"
+#define DEFAULT_PALETTE	 "colors.txt"
 #define DEFAULT_WINDOW_X 80
 #define DEFAULT_WINDOW_Y 25
-#define DEFAULT_FULLSCRN 1
-#define DEFAULT_PALETTE	 "colors.txt"
-#define DEFAULT_TILESET  "curses.bmp"
+#define DEFAULT_WINDOWED 1
 
 static config_t options_cfg = {0};
 
@@ -17,11 +17,12 @@ static FILE *create_options(void)
 		return NULL;
 	}
 
+	fprintf(fp, "tileset[%s]\n",	DEFAULT_TILESET);
+	fprintf(fp, "palette[%s]\n",	DEFAULT_PALETTE);
 	fprintf(fp, "window_x[%i]\n",	DEFAULT_WINDOW_X);
 	fprintf(fp, "window_y[%i]\n",	DEFAULT_WINDOW_Y);
-	fprintf(fp, "fullscreen[%i]\n", DEFAULT_FULLSCRN);
-	fprintf(fp, "palette[%s]\n",	DEFAULT_PALETTE);
-	fprintf(fp, "tileset[%s]\n",	DEFAULT_TILESET);
+	fprintf(fp, "windowed[%i]\n",	DEFAULT_WINDOWED);
+
 	fclose(fp);
 
 	return fopen("options.txt", "r");
