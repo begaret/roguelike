@@ -2,6 +2,8 @@
 
 #include "palette.h"
 
+#include <allegro5/allegro.h>
+
 enum key_t
 {
 	K_ERR	= -1,
