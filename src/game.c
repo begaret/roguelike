@@ -3,8 +3,48 @@
 #include "popup.h"
 #include "terminal.h"
 
+#include <unistd.h>
+
 monster_t p;
 map_t m;
+
+static void load_data(void)
+{
+	mdata_t md[] = {
+		{strdup("m_human"), C_WHITE, C_BLACK, '@', 0}
+	};
+
+	tdata_t td[] = {
+		{strdup("t_grass"),	C_LGREEN,	C_BLACK, ',', 0},
+		{strdup("t_bush"),	C_GREEN,	C_BLACK, '#', 0}
+	};
+
+	terminal_clear();
+
+	terminal_color(C_WHITE, C_BLACK);
+	terminal_border(0, 0, -1, -1);
+	terminal_puts(-1, 0, "\xAE &Yloading&W \xAF");
+
+	terminal_puts(2, 2, "&Cloading monsters");
+	for (int i = 0; i < 1; i++) {
+		mdata_t data = md[i];
+
+		terminal_color(data.color1, data.color2);
+		terminal_putc(2 + i, 3, data.tile);
+		terminal_refresh();
+		data_add_mdata(data);
+	}
+
+	terminal_puts(2, 5, "&Cloading terrain");
+	for (int i = 0; i < 2; i++) {
+		tdata_t data = td[i];
+
+		terminal_color(data.color1, data.color2);
+		terminal_putc(2 + i, 6, data.tile);
+		terminal_refresh();
+		data_add_tdata(data);
+	}
+}
 
 static void load_save(void)
 {
@@ -24,12 +64,17 @@ static void make_save(void)
 
 void setup(int load)
 {
-	// load data here
 	data_init();
+	load_data();
 
 	load ? load_save() : make_save();
 
-	run();
+	// run();
+	while (1) {
+		int k = terminal_getc();
+		if (k == K_ESCAPE)
+			break;
+	}
 }
 
 void run(void)
@@ -82,9 +127,20 @@ void run(void)
 		} else if (k == K_DOWN) {
 			p.y++;
 		} else if (k == K_ESCAPE) {
+			data_exit();
 			free_map(&m);	// TODO: move
 			return;
 		}
 	}
+}
+
+void update(void)
+{
+
+}
+
+void draw(void)
+{
+
 }
 

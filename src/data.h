@@ -26,6 +26,10 @@ void data_init(void);
 
 void data_exit(void);
 
+void data_add_mdata(mdata_t m);
+
+void data_add_tdata(tdata_t t);
+
 mdata_t *data_get_mdata(char *id);
 
 tdata_t *data_get_tdata(char *id);
