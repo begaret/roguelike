@@ -4,6 +4,10 @@
 #include "terminal.h"
 #include "popup.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 void options_menu(void)
 {
 	struct {char name[64]; char *s;} opt[] = {

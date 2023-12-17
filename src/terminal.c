@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_image.h>
+
 static struct {
 	ALLEGRO_DISPLAY		*	display;
 	ALLEGRO_BITMAP		*	tileset;

@@ -4,6 +4,8 @@
 #include "help_menu.h"
 #include "terminal.h"
 
+#include <stddef.h>
+
 int pause_menu(void)
 {
 	int sel = 0;

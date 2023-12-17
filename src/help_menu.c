@@ -2,6 +2,8 @@
 
 #include "terminal.h"
 
+#include <stddef.h>
+
 void help_menu(void)
 {
 	while (1) {

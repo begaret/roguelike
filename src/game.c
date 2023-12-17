@@ -4,7 +4,7 @@
 #include "popup.h"
 #include "terminal.h"
 
-#include <unistd.h>
+#include <string.h>
 
 monster_t p;
 map_t m;

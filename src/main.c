@@ -5,6 +5,8 @@
 #include "help_menu.h"
 #include "game.h"
 
+#include <stdlib.h>
+
 void quit(void)
 {
 	tclose();
