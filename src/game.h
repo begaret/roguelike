@@ -11,6 +11,8 @@ extern map_t m;
 
 void setup(int load);
 
+void end(void);
+
 void draw(void);
 
 void update(void);

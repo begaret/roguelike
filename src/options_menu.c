@@ -19,8 +19,10 @@ void options_menu(void)
 		tclear();
 
 		tcolor(C_WHITE, C_BLACK);
-		tborder(0, 0, -1, -1);
-		tputs(-1, 0, "\xAE &Yoptions&W \xAF");
+		tborder(0, 0, -1, -1, "options", NULL);
+
+		tcolor(C_YELLOW, C_BLACK);
+		tputc(2, 2 + sel + (sel + 1) / 3, '\x10');
 
 		tprintf(2 + (sel == 0), 2, "&wtileset");
 		tprintf(2 + (sel == 1), 3, "&wpalette");
@@ -33,9 +35,6 @@ void options_menu(void)
 		tprintf(18, 5, "&W-   &Y%s", window_x);
 		tprintf(18, 6, "&W-   &Y%s", window_y);
 		tprintf(18, 7, "&W-   &Y%s", fullscreen);
-
-		tcolor(C_YELLOW, C_BLACK);
-		tputc(2, 2 + sel + (sel + 1) / 3, '\x10');
 
 		tflush();
 		

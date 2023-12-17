@@ -26,7 +26,7 @@ static struct {
 int tx = 0;
 int ty = 0;
 
-void tinit(void)
+void topen(void)
 {
 	if (al_init() == 0 || al_init_image_addon() == 0) {
 		return;
@@ -115,7 +115,7 @@ void tinit(void)
 	ty = terminal.window_y;
 }
 
-void texit(void)
+void tclose(void)
 {
 	al_destroy_event_queue(terminal.queue);
 	al_destroy_timer(terminal.timer);
@@ -257,22 +257,22 @@ void tprintf(int x, int y, char *fmt, ...)
 	tputs(x, y, s);
 }
 
-void tborder(int x, int y, int w, int h)
+void tborder(int x, int y, int w, int h, char *t, char *b)
 {
 	if (w == -1) {
-		w = terminal.window_x - 1;
+		w = tx - 1;
 	}
 
 	if (h == -1) {
-		h = terminal.window_y - 1;
+		h = ty - 1;
 	}
 
 	if (x == -1) {
-		x = terminal.window_x / 2 - w / 2;
+		x = tx / 2 - w / 2;
 	}
 
 	if (y == -1) {
-		y = terminal.window_y / 2 - h / 2;
+		y = ty / 2 - h / 2;
 	}
 
 	tputc(x    , y    , '\xDA');
@@ -293,6 +293,16 @@ void tborder(int x, int y, int w, int h)
 		for (int Y = y + 1; Y < y + h; Y++) {
 			tputc(X, Y, ' ');
 		}
+	}
+
+	if (t) {
+		const int l = strlen(t) + 4;
+		tprintf(x + w / 2 - l / 2, y, "\xAE &Y%s&W \xAF", t);
+	}
+
+	if (b) {
+		const int l = strlen(b) + 4;
+		tprintf(x + w / 2 - l / 2, y + h, "\xAE &Y%s&W \xAF", b);
 	}
 }
 
@@ -336,7 +346,7 @@ int tgetc(void)
 	al_wait_for_event(terminal.queue, &event);
 
 	if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-		texit();
+		tclose();
 		exit(EXIT_SUCCESS);
 	} else if (event.type == ALLEGRO_EVENT_KEY_CHAR) {
 		int k = event.keyboard.unichar;

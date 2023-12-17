@@ -7,14 +7,14 @@
 
 void quit(void)
 {
-	texit();
+	tclose();
 	options_exit();
 }
 
 void init(void)
 {
 	options_init();
-	tinit();
+	topen();
 
 	atexit(quit);
 }

@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include "pause_menu.h"
 #include "popup.h"
 #include "terminal.h"
 
@@ -11,19 +12,19 @@ map_t m;
 static void load_data(void)
 {
 	mdata_t md[] = {
-		{strdup("m_human"), C_WHITE, C_BLACK, '@', 0}
+		{strdup("m_human"), C_WHITE, C_BLACK, '@', 0},
 	};
 
 	tdata_t td[] = {
-		{strdup("t_grass"),	C_LGREEN,	C_BLACK, ',', 0},
-		{strdup("t_bush"),	C_GREEN,	C_BLACK, '#', 0}
+		{strdup("t_grass"),		C_LGREEN,	C_BLACK, ',',	 0},
+		{strdup("t_bush"),		C_GREEN,	C_BLACK, '#',	 0},
+		{strdup("t_statue"),	C_LGRAY,	C_BLACK, '\xEA', 0},
 	};
 
 	tclear();
 
 	tcolor(C_WHITE, C_BLACK);
-	tborder(0, 0, -1, -1);
-	tputs(-1, 0, "\xAE &Yloading&W \xAF");
+	tborder(0, 0, -1, -1, "loading", NULL);
 
 	tputs(2, 2, "&Cloading monsters");
 	for (int i = 0; i < 1; i++) {
@@ -36,7 +37,7 @@ static void load_data(void)
 	}
 
 	tputs(2, 5, "&Cloading terrain");
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		tdata_t data = td[i];
 
 		tcolor(data.color1, data.color2);
@@ -70,12 +71,15 @@ void setup(int load)
 	load ? load_save() : make_save();
 
 	while (1) {
+		update();
 		draw();	
 
 		int k = tgetc();
 		if (k == K_ESCAPE) {
-			free_map(&m);
-			break;
+			if (pause_menu() == 'q') {
+				end();
+				break;
+			}
 		} switch (k) {
 			case 'y':	p.y--;	p.x--;	break;
 			case 'u':	p.y--;	p.x++;	break;
@@ -89,23 +93,33 @@ void setup(int load)
 	}
 }
 
+void end(void)
+{
+	free_map(&m);
+	data_exit();
+}
+
 void update(void)
 {
 
 }
 
+// TODO: make prettier
 static void draw_menu(void)
 {
 	tcolor(C_WHITE, C_BLACK);
-	tborder(tx - 32, 0, 32 - 1, ty - 1);
-	tborder(0, ty - 8, tx - 33, 7);
+	tborder(tx - 24, 0,		 24 - 1,  ty - 1, 	NULL, NULL);	// status menu
+	tborder(0, 		 ty - 8, tx - 25, 7, 		NULL, NULL);	// message log
+
+	tputs(tx - 22, 2, 	   "&RSTATUS");
+	tputs(2,	   ty - 6, "&RMESSAGE");
 }
 
 void draw(void)
 {
 	tclear();
 
-	int w = tx - 32;
+	int w = tx - 24;
 	int h = ty - 8;
 
 	// draw map

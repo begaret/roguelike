@@ -8,8 +8,8 @@ void help_menu(void)
 		tclear();
 
 		tcolor(C_WHITE, C_BLACK);
-		tborder(0, 0, -1, -1);
-		tputs(-1, 0, "\xAE &Yhelp&W \xAF");
+		tborder(0, 0, -1, -1, "help", NULL);
+		// tputs(-1, 0, "\xAE &Yhelp&W \xAF");
 
 		tprintf(2, 2, "&YTODO");
 

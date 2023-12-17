@@ -23,9 +23,9 @@ enum key_t
 extern int tx;
 extern int ty;
 
-void tinit(void);
+void topen(void);
 
-void texit(void);
+void tclose(void);
 
 void tclear(void);
 
@@ -39,7 +39,8 @@ void tputs(int x, int y, char *s);
 
 void tprintf(int x, int y, char *fmt, ...);
 
-void tborder(int x, int y, int w, int h);
+void tborder(int x, int y, int w, int h, 
+			 char *t, char *b);
 
 int tgetc(void);
 

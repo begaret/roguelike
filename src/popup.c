@@ -13,9 +13,7 @@ int popup_yn(char *m)
 	int y = ty / 2 - h / 2;
 	while (1) {
 		tcolor(C_WHITE, C_BLACK);
-		tborder(-1, -1, w, h);
-		
-		tputs(-1, y + 4, "\xAE &Yy/n&W \xAF");
+		tborder(-1, -1, w, h, NULL, "y/n");
 		tputs(-1, y + 2, m);
 
 		tflush();
@@ -45,7 +43,7 @@ char *popup_s(char *m)
 	int i = 0;
 	while (1) {
 		tcolor(C_WHITE, C_BLACK);
-		tborder(-1, -1, w + i, h);
+		tborder(-1, -1, w + i, h, NULL, NULL);
 
 		tprintf(-1, y + 2, "%s: %s", m, s);
 
