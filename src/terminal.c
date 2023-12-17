@@ -113,6 +113,11 @@ void topen(void)
 
 	tx = terminal.window_x;
 	ty = terminal.window_y;
+
+	static char title[128];
+	snprintf(title, 128, "%ix%i", tx, ty);
+
+	al_set_window_title(terminal.display, title);
 }
 
 void tclose(void)

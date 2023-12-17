@@ -16,7 +16,7 @@ int/%.o: src/%.c
 all: $(OUT)
 
 $(OUT): $(OBJ)
-	$(CC) $^ -o $@ $(LIB)
+	$(CC) $^ -o $@ $(LIB) # -fsanitize=address
 
 clean:
 	rm -f int/*
