@@ -16,30 +16,27 @@ int main_menu(void)
 		terminal_color(C_WHITE, C_BLACK);
 		terminal_puts(1 + (sel == 0), 3, "n - new game");
 		terminal_puts(1 + (sel == 1), 4, "l - load game");
-		terminal_puts(1 + (sel == 2), 5, "w - create world");
-		terminal_puts(1 + (sel == 3), 6, "o - options");
-		terminal_puts(1 + (sel == 4), 7, "? - help");
-		terminal_puts(1 + (sel == 5), 8, "q - quit");
+		terminal_puts(1 + (sel == 2), 5, "o - options");
+		terminal_puts(1 + (sel == 3), 6, "? - help");
+		terminal_puts(1 + (sel == 4), 7, "q - quit");
 
 		terminal_refresh();
 		
 		int k = terminal_getc();
 		if (k == K_DOWN) {
-			sel = (sel + 1) % 6;
+			sel = (sel + 1) % 5;
 		} else if (k == K_UP) {
-			sel = sel > 0 ? (sel - 1) : 5;
+			sel = sel > 0 ? (sel - 1) : 4;
 		} else if (k == K_ENTER) {
 			switch (sel) {
 				case 0: return 'n';
 				case 1: return 'l';
-				case 2: return 'w';
-				case 3: return 'o';
-				case 4: return '?';
-				case 5: return 'q';
+				case 2: return 'o';
+				case 3: return '?';
+				case 4: return 'q';
 			}
 		} else if (k == 'n' 
 				|| k == 'l' 
-				|| k == 'w' 
 				|| k == 'o'
 				|| k == '?'
 				|| k == 'q') {

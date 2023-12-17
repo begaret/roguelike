@@ -3,19 +3,20 @@
 #include "options_menu.h"
 #include "main_menu.h"
 #include "help_menu.h"
+#include "game.h"
 
 void quit(void)
 {
 	terminal_exit();
 	options_exit();
-
-	atexit(quit);
 }
 
 void init(void)
 {
 	options_init();
 	terminal_init();
+
+	atexit(quit);
 }
 
 int main(int argc, char *argv[])
@@ -31,9 +32,8 @@ int main(int argc, char *argv[])
 		}
 
 		switch (o) {
-			case 'n': break;
-			case 'l': break;
-			case 'w': break;
+			case 'n': setup(0); break;
+			case 'l': setup(1); break;
 			case 'o': {
 				options_menu(); 
 			} break;

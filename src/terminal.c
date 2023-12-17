@@ -154,6 +154,11 @@ void terminal_color(color_t fore, color_t back)
 
 void terminal_putc(int x, int y, char c)
 {
+	if (x < 0 || x >= (int)terminal.window_x
+	 || y < 0 || y >= (int)terminal.window_y) {
+		return;
+	}
+
 	unsigned color1 = palette_get(terminal.fore);
 	unsigned color2 = palette_get(terminal.back);
 
@@ -212,6 +217,14 @@ static color_t ch_to_color(char c)
 
 void terminal_puts(int x, int y, char *s)
 {
+	int ac = 0;
+	char *p = s;
+	for (ac = 0; p[ac]; p[ac] == '&' ? ac++ : *p++);
+
+	if (x == -1) {
+		x = terminal.window_x / 2 - strlen(s) / 2 + ac;
+	}
+
 	while (*s) {
 		if (*s == '&') {
 			if (*++s == '&') {
@@ -247,18 +260,26 @@ void terminal_border(int x, int y, int w, int h)
 		h = terminal.window_y - 1;
 	}
 
-	terminal_putc(x, y, '\xDA');
-	terminal_putc(w, y, '\xBF');
-	terminal_putc(w, h, '\xD9');
-	terminal_putc(x, h, '\xC0');
+	if (x == -1) {
+		x = terminal.window_x / 2 - w / 2;
+	}
+
+	if (y == -1) {
+		y = terminal.window_y / 2 - h / 2;
+	}
+
+	terminal_putc(x    , y    , '\xDA');
+	terminal_putc(x + w, y    , '\xBF');
+	terminal_putc(x + w, y + h, '\xD9');
+	terminal_putc(x    , y + h, '\xC0');
 	for (int i = x + 1; i < x + w; i++) {
-		terminal_putc(i, y, '\xC4');
-		terminal_putc(i, h, '\xC4');
+		terminal_putc(i, y    , '\xC4');
+		terminal_putc(i, y + h, '\xC4');
 	}
 
 	for (int i = y + 1; i < y + h; i++) {
-		terminal_putc(x, i, '\xB3');
-		terminal_putc(w, i, '\xB3');
+		terminal_putc(x    , i, '\xB3');
+		terminal_putc(x + w, i, '\xB3');
 	}
 }
 
