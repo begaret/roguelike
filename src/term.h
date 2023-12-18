@@ -4,7 +4,7 @@
 
 enum key_t
 {
-	K_ERR	= -1,
+	K_ERR		= -1,
 
 	K_LEFT		= 0x100,
 	K_RIGHT		= 0x101,

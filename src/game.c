@@ -2,7 +2,7 @@
 
 #include "pause_menu.h"
 #include "popup.h"
-#include "terminal.h"
+#include "term.h"
 
 #include <string.h>
 

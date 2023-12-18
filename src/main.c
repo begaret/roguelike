@@ -1,4 +1,4 @@
-#include "terminal.h"
+#include "term.h"
 #include "options.h"
 #include "options_menu.h"
 #include "main_menu.h"

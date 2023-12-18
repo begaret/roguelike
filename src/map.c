@@ -1,6 +1,6 @@
 #include "map.h"
 
-#include "terminal.h"
+#include "term.h"
 
 #include <stdlib.h>
 

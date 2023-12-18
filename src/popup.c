@@ -1,6 +1,6 @@
 #include "popup.h"
 
-#include "terminal.h"
+#include "term.h"
 
 #include <string.h>
 

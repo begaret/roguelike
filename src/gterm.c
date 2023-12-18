@@ -1,9 +1,8 @@
-#include "terminal.h"
+#include "gterm.h"
 
 #include "options.h"
 
 #include <stdlib.h>
-#include <stdarg.h>
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
@@ -26,10 +25,7 @@ static struct {
 	color_t					back;
 } terminal;
 
-int tx = 0;
-int ty = 0;
-
-void topen(void)
+void _gtopen(void)
 {
 	if (al_init() == 0 || al_init_image_addon() == 0) {
 		return;
@@ -123,7 +119,7 @@ void topen(void)
 	al_set_window_title(terminal.display, title);
 }
 
-void tclose(void)
+void _gtclose(void)
 {
 	al_destroy_event_queue(terminal.queue);
 	al_destroy_timer(terminal.timer);
@@ -132,7 +128,7 @@ void tclose(void)
 	al_destroy_bitmap(terminal.tileset);
 }
 
-void tclear(void)
+void _gtclear(void)
 {
 	unsigned color = palette_get(terminal.back);
 	al_clear_to_color(al_map_rgb(
@@ -142,7 +138,7 @@ void tclear(void)
 	);
 }
 
-void tflush(void)
+void _gtflush(void)
 {
 	al_hold_bitmap_drawing(0);
 	al_set_target_backbuffer(terminal.display);
@@ -160,13 +156,13 @@ void tflush(void)
 	al_hold_bitmap_drawing(1);
 }
 
-void tcolor(color_t fore, color_t back)
+void _gtcolor(color_t fore, color_t back)
 {
 	terminal.fore = fore;
 	terminal.back = back;
 }
 
-void tputc(int x, int y, char c)
+void _gtputc(int x, int y, char c)
 {
 	if (x < 0 || x >= (int)terminal.window_x
 	 || y < 0 || y >= (int)terminal.window_y) {
@@ -230,7 +226,7 @@ static color_t ch_to_color(char c)
 	}
 }
 
-void tputs(int x, int y, char *s)
+void _gtputs(int x, int y, char *s)
 {
 	int ac = 0;
 	char *p = s;
@@ -243,17 +239,26 @@ void tputs(int x, int y, char *s)
 	while (*s) {
 		if (*s == '&') {
 			if (*++s == '&') {
-				tputc(x++, y, *s++);
+				_gtputc(x++, y, *s++);
 			} else {
-				tcolor(ch_to_color(*s++), terminal.back);
+				_gtcolor(ch_to_color(*s++), terminal.back);
 			}
 		} else {
-			tputc(x++, y, *s++);
+			_gtputc(x++, y, *s++);
 		}
 	}
 }
 
-void tprintf(int x, int y, char *fmt, ...)
+void _gtprintf(int x, int y, char *fmt, va_list args)
+{
+	static char s[256];
+	vsnprintf(s, 255, fmt, args);
+
+	_gtputs(x, y, s);
+}
+
+// TODO: rewrite this
+static void _gtprintfs(int x, int y, char *fmt, ...)
 {
 	static char s[256];
 
@@ -262,10 +267,10 @@ void tprintf(int x, int y, char *fmt, ...)
 	vsnprintf(s, 255, fmt, args);
 	va_end(args);
 
-	tputs(x, y, s);
+	_gtputs(x, y, s);
 }
 
-void tborder(int x, int y, int w, int h, char *t, char *b)
+void _gtborder(int x, int y, int w, int h, char *t, char *b)
 {
 	if (w == -1) {
 		w = tx - 1;
@@ -283,35 +288,35 @@ void tborder(int x, int y, int w, int h, char *t, char *b)
 		y = ty / 2 - h / 2;
 	}
 
-	tputc(x    , y    , '\xDA');
-	tputc(x + w, y    , '\xBF');
-	tputc(x + w, y + h, '\xD9');
-	tputc(x    , y + h, '\xC0');
+	_gtputc(x    , y    , '\xDA');
+	_gtputc(x + w, y    , '\xBF');
+	_gtputc(x + w, y + h, '\xD9');
+	_gtputc(x    , y + h, '\xC0');
 	for (int i = x + 1; i < x + w; i++) {
-		tputc(i, y    , '\xC4');
-		tputc(i, y + h, '\xC4');
+		_gtputc(i, y    , '\xC4');
+		_gtputc(i, y + h, '\xC4');
 	}
 
 	for (int i = y + 1; i < y + h; i++) {
-		tputc(x    , i, '\xB3');
-		tputc(x + w, i, '\xB3');
+		_gtputc(x    , i, '\xB3');
+		_gtputc(x + w, i, '\xB3');
 	}
 
 	for (int X = x + 1; X < x + w; X++) {
 		for (int Y = y + 1; Y < y + h; Y++) {
-			tputc(X, Y, ' ');
+			_gtputc(X, Y, ' ');
 		}
 	}
 
 	if (t) {
 		const int l = strlen(t) + 4;
-		tprintf(x + w / 2 - l / 2 + 1, y,
+		_gtprintfs(x + w / 2 - l / 2 + 1, y,
 			"\xAE &Y%s&W \xAF", t);
 	}
 
 	if (b) {
 		const int l = strlen(b) + 4;
-		tprintf(x + w / 2 - l / 2 + 1, y + h, 
+		_gtprintfs(x + w / 2 - l / 2 + 1, y + h, 
 			"\xAE &Y%s&W \xAF", b);
 	}
 }
@@ -350,13 +355,12 @@ static int convert_unicode(int code)
 	}
 }
 
-int tgetc(void)
+int _gtgetc(void)
 {
 	ALLEGRO_EVENT event;
 	al_wait_for_event(terminal.queue, &event);
 
 	if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-		tclose();
 		exit(EXIT_SUCCESS);
 	} else if (event.type == ALLEGRO_EVENT_KEY_CHAR) {
 		int k = event.keyboard.unichar;

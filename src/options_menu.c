@@ -1,7 +1,7 @@
 #include "options_menu.h"
 
 #include "options.h"
-#include "terminal.h"
+#include "term.h"
 #include "popup.h"
 
 #include <stdlib.h>
@@ -16,6 +16,7 @@ void options_menu(void)
 		{"window_x",	NULL},
 		{"window_y",	NULL},
 		{"windowed",	NULL},
+		{"display",		NULL},
 	};
 
 	int changed = 0;

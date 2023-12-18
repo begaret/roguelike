@@ -4,7 +4,8 @@ CFLAGS=-Wall -Wextra -Ofast
 SRC=$(wildcard src/*.c)
 OBJ=$(patsubst src/%.c, int/%.o, $(SRC))
 
-LIB=-lallegro -lallegro_main -lallegro_image
+# TODO: dynamic linking depending on backend
+LIB=-lallegro -lallegro_main -lallegro_image -lncurses
 
 OUT=bin/main
 

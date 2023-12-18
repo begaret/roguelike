@@ -2,7 +2,7 @@
 
 #include "options_menu.h"
 #include "help_menu.h"
-#include "terminal.h"
+#include "term.h"
 
 #include <stddef.h>
 

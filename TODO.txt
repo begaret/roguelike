@@ -1,6 +1,7 @@
 * add error handling
 * fix & in text input
 * redo popup/ui
+* fix special characters in curses backend
 
 ----- future -----
 scrolling map
