@@ -3,6 +3,7 @@
 #include "options.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
@@ -28,7 +29,7 @@ static struct {
 void _gtopen(void)
 {
 	if (al_init() == 0 || al_init_image_addon() == 0) {
-		return;
+		error("al_init()\n");
 	}
 
 	al_install_keyboard();
@@ -36,7 +37,7 @@ void _gtopen(void)
 
 	terminal.tileset = al_load_bitmap(options_get("tileset"));
 	if (terminal.tileset == NULL) {
-		return;
+		error("al_load_bitmap()\n");
 	}
 
 	terminal.tileset_x = al_get_bitmap_width(terminal.tileset);
@@ -49,17 +50,17 @@ void _gtopen(void)
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 	} else {
 #ifdef __APPLE__
-	terminal.display_x = terminal.window_x * (terminal.tileset_x / 32) * 2;
-	terminal.display_y = terminal.window_y * (terminal.tileset_y / 8) * 2;
+		terminal.display_x = terminal.window_x * (terminal.tileset_x / 32) * 2;
+		terminal.display_y = terminal.window_y * (terminal.tileset_y / 8)  * 2;
 #else
-	terminal.display_x = terminal.window_x * (terminal.tileset_x / 32);
-	terminal.display_y = terminal.window_y * (terminal.tileset_y / 8);
+		terminal.display_x = terminal.window_x * (terminal.tileset_x / 32);
+		terminal.display_y = terminal.window_y * (terminal.tileset_y / 8);
 #endif
 	}
 
 	terminal.display = al_create_display(terminal.display_x, terminal.display_y);
 	if (terminal.display == NULL) {
-		return;
+		error("al_create_display()\n");
 	}
 
 	if (!atoi(options_get("windowed"))) {
@@ -81,19 +82,19 @@ void _gtopen(void)
 	terminal.buffer = al_create_bitmap(terminal.display_x, terminal.display_y);
 #endif
 	if (terminal.buffer == NULL) {
-		return;
+		error("al_create_bitmap()\n");
 	}
 
 	al_convert_mask_to_alpha(terminal.tileset, al_map_rgb(0x00, 0x00, 0x00));
 
 	terminal.timer = al_create_timer(1.0 / 60.0);
 	if (terminal.timer == NULL) {
-		return;
+		error("al_create_timer()\n");
 	}
 
 	terminal.queue = al_create_event_queue();
 	if (terminal.queue == NULL) {
-		return;
+		error("al_create_event_queue()\n");
 	}
 
 	al_register_event_source(terminal.queue, al_get_keyboard_event_source());

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "palette.h"
+#include "error.h"
 
 enum key_t
 {
