@@ -5,3 +5,10 @@
 ----- future -----
 scrolling map
 overworld
+
+* regeneration
+for every turn:
+hp += regeneration-- * (vitality / 10.0f);
+until:
+regeneration == 0
+

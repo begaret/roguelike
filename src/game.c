@@ -16,9 +16,10 @@ static void load_data(void)
 	};
 
 	tdata_t td[] = {
-		{strdup("t_grass"),		C_LGREEN,	C_BLACK, ',',	 0},
-		{strdup("t_bush"),		C_GREEN,	C_BLACK, '#',	 0},
-		{strdup("t_statue"),	C_LGRAY,	C_BLACK, '\xEA', 0},
+		{strdup("t_grass"),			C_LGREEN,	C_BLACK, ',',	 0},
+		{strdup("t_bush"),			C_GREEN,	C_BLACK, '#',	 0},
+		{strdup("t_statue"),		C_LGRAY,	C_BLACK, '\xEA', 0},
+		{strdup("t_broken_statue"),	C_GRAY,		C_BLACK, '\xEA', 0},
 	};
 
 	tclear();
@@ -37,7 +38,7 @@ static void load_data(void)
 	}
 
 	tputs(2, 5, "&Cloading terrain");
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		tdata_t data = td[i];
 
 		tcolor(data.color1, data.color2);
@@ -111,8 +112,8 @@ void update(void)
 static void draw_menu(void)
 {
 	tcolor(C_WHITE, C_BLACK);
-	tborder(tx - 24, 0,		 24 - 1,  ty - 1, 	NULL, NULL);	// status menu
-	tborder(0, 		 ty - 8, tx - 25, 7, 		NULL, NULL);	// message log
+	tborder(tx - 24, 0,		 24 - 1,  ty - 1, 	NULL,	NULL);	// status menu
+	tborder(0, 		 ty - 8, tx - 25, 7, 		NULL,	NULL);	// message log
 
 	tputs(tx - 22, 2, 	   "&RSTATUS");
 	tputs(2,	   ty - 6, "&RMESSAGE");

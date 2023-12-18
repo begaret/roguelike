@@ -45,12 +45,11 @@ void options_menu(void)
 			case '2':	case 'j':	sel = (sel + 1) % len;				break;
 			case K_ENTER: {
 				char *s = popup_s("enter value");
-				free(opt[sel].s);
 				if (s) {
+					free(opt[sel].s);
 					opt[sel].s = strdup(s);
+					changed = 1;
 				}
-				
-				changed = 1;
 			} break;
 			case K_ESCAPE: {
 				if (!changed) {

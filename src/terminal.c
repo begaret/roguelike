@@ -305,12 +305,14 @@ void tborder(int x, int y, int w, int h, char *t, char *b)
 
 	if (t) {
 		const int l = strlen(t) + 4;
-		tprintf(x + w / 2 - l / 2, y, "\xAE &Y%s&W \xAF", t);
+		tprintf(x + w / 2 - l / 2 + 1, y,
+			"\xAE &Y%s&W \xAF", t);
 	}
 
 	if (b) {
 		const int l = strlen(b) + 4;
-		tprintf(x + w / 2 - l / 2, y + h, "\xAE &Y%s&W \xAF", b);
+		tprintf(x + w / 2 - l / 2 + 1, y + h, 
+			"\xAE &Y%s&W \xAF", b);
 	}
 }
 

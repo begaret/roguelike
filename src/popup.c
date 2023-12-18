@@ -50,12 +50,19 @@ char *popup_s(char *m)
 		tflush();
 
 		int k = tgetc();
-		if (k >= 0 && k < 0x100 && i < 127) {
-			s[i++] = k;
-		} else if (k == K_DELETE && i > 0) {
-			s[--i] = '\0';
-		} else if (k == K_ENTER) {
-			return s;
+		switch (k) {
+			case 0 ... 0x100: {
+				if (i < 127) s[i++] = k;
+			} break;
+			case K_DELETE: {
+				if (i > 0) s[--i] = '\0';
+			} break;
+			case K_ENTER: {
+				return s;
+			} break;
+			case K_ESCAPE: {
+				return NULL;
+			} break;
 		}
 	}
 }

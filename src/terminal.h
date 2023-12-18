@@ -2,16 +2,14 @@
 
 #include "palette.h"
 
-#include <allegro5/allegro.h>
-
 enum key_t
 {
 	K_ERR	= -1,
 
-	K_LEFT	= 0x100,
-	K_RIGHT	= 0x101,
-	K_UP	= 0x102,
-	K_DOWN	= 0x103,
+	K_LEFT		= 0x100,
+	K_RIGHT		= 0x101,
+	K_UP		= 0x102,
+	K_DOWN		= 0x103,
 
 	K_ENTER		= 0x104,
 	K_TAB		= 0x105,
