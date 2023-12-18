@@ -226,7 +226,7 @@ void _ttborder(int x, int y, int w, int h, char *t, char *b)
 
 	if (b) {
 		const int l = strlen(b) + 4;
-		_ttprintfs(x + w / 2 - l / 2 + 1, y + h, 
+		_ttprintfs(x + w / 2 - l / 2, y + h, 
 			"\xAE &Y%s&W \xAF", b);
 	}
 }
