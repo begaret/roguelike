@@ -1,12 +1,13 @@
 int/
 bin/
-*.bmp
+ibm_*.bmp
 *.png
-colors.txt
 bleak.txt
 bright.txt
 tarot.txt
 options.txt
-help.txt
 .DS_Store
 .tar.gz
+
+al_term.*
+

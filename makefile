@@ -1,3 +1,5 @@
+UNAME=$(shell uname)
+
 CC=cc
 CFLAGS=-Wall -Wextra -Ofast
 
@@ -5,11 +7,16 @@ CFLAGS=-Wall -Wextra -Ofast
 SRC=$(filter-out  src/al_term.c, $(wildcard src/*.c))
 OBJ=$(patsubst src/%.c, int/%.o, $(SRC))
 
-# TODO: dynamic linking depending on backend
+ifeq ($(UNAME), Darwin)
 LIB=\
 	-lSDL2 -lGLEW -framework OpenGL\
 		-lncurses
-#	-lallegro -lallegro_main -lallegro_image 
+else
+LIB=\
+	-lm\
+	-lSDL2 -lGLEW -lGL\
+		-lncurses
+endif
 INC=-Iinclude/
 
 RES=colors.txt curses.bmp
@@ -22,6 +29,13 @@ int/%.o: src/%.c
 	$(CC) -c $^ -o $@ $(INC) $(CFLAGS)
 
 all: $(APP)
+ifeq ($(wildcard bin/*),)
+	mkdir bin/
+endif
+ifeq ($(wildcard int/*),)
+	mkdir int/
+endif
+
 
 $(APP): $(OUT)
 	mkdir -p $(APP)/

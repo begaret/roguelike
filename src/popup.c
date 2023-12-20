@@ -11,13 +11,14 @@ int popup_yn(char *m)
 	int h = 1 + 3;
 
 	int y = ty / 2 - h / 2;
+
+	tcolor(C_WHITE, C_BLACK);
+	tborder(-1, -1, w, h, NULL, "y/n");
+	tputs(-1, y + 2, m);
+
+	tflush();
+
 	while (1) {
-		tcolor(C_WHITE, C_BLACK);
-		tborder(-1, -1, w, h, NULL, "y/n");
-		tputs(-1, y + 2, m);
-
-		tflush();
-
 		int k = tgetc();
 		if (k == 'y' || k == K_ENTER) {
 			return 1;

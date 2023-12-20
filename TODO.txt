@@ -5,6 +5,7 @@
 // add SDL2/OpenGL backend
 * add dll/plugin for backend libraries?
 * rewrite OpenGL backend
+* fix flashing in popups
 
 ----- future -----
 scrolling map
