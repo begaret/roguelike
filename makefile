@@ -23,12 +23,14 @@ RES=colors.txt curses.bmp
 APP=bin/roguelike-v0.0.0
 OUT=bin/main
 
-.PHONY: all clean
+.PHONY: all dirs clean
 
 int/%.o: src/%.c
 	$(CC) -c $^ -o $@ $(INC) $(CFLAGS)
 
-all: $(APP)
+all: dirs $(APP)
+
+dirs:
 ifeq ($(wildcard bin/*),)
 	mkdir bin/
 endif
