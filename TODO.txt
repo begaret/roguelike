@@ -2,8 +2,9 @@
 * fix & in text input
 * redo popup/ui
 * fix special characters in curses backend
-* add SDL2/OpenGL backend
+// add SDL2/OpenGL backend
 * add dll/plugin for backend libraries?
+* rewrite OpenGL backend
 
 ----- future -----
 scrolling map

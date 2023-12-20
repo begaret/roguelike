@@ -267,8 +267,8 @@ void gl_tputc(int x, int y, char c)
 	const int tile_w = terminal.tileset_x / col;
 	const int tile_h = terminal.tileset_y / row;
 
-	const int tile_x = c % col;
-	const int tile_y = row - (c / col + 1);
+	const int tile_x = (c & 0xFF) % col;
+	const int tile_y = row - ((c & 0xFF) / col + 1);
 	const float u1 = (tile_w * tile_x) / (float)(terminal.tileset_x);
 	const float u2 = u1 + (tile_w / (float)(terminal.tileset_x));
 	const float v1 = (tile_h * tile_y) / (float)(terminal.tileset_y);
