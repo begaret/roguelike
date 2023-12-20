@@ -1,9 +1,11 @@
 #include "term.h"
 
-#include "gterm.h"
-#include "tterm.h"
+#include "gl_term.h"
+// #include "al_term.h"
+#include "nc_term.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 int tx = 0;
 int ty = 0;
@@ -21,30 +23,43 @@ int(*_tgetc)(void);
 
 void topen(void)
 {
-	if (atoi(options_get("display"))) {
-		_topen		= _gtopen;
-		_tclose		= _gtclose;
-		_tclear		= _gtclear;
-		_tflush		= _gtflush;
-		_tcolor		= _gtcolor;
-		_tputc		= _gtputc;
-		_tputs		= _gtputs;
-		_tprintf	= _gtprintf;
-		_tborder	= _gtborder;
-		_tgetc		= _gtgetc;
+	if (strcmp(options_get("display"), "opengl") == 0) {
+		_topen		= gl_topen;
+		_tclose		= gl_tclose;
+		_tclear		= gl_tclear;
+		_tflush		= gl_tflush;
+		_tcolor		= gl_tcolor;
+		_tputc		= gl_tputc;
+		_tputs		= gl_tputs;
+		_tprintf	= gl_tprintf;
+		_tborder	= gl_tborder;
+		_tgetc		= gl_tgetc;
+	}  else/* if (strcmp(options_get("display"), "allegro") == 0) {
+		_topen		= al_topen;
+		_tclose		= al_tclose;
+		_tclear		= al_tclear;
+		_tflush		= al_tflush;
+		_tcolor		= al_tcolor;
+		_tputc		= al_tputc;
+		_tputs		= al_tputs;
+		_tprintf	= al_tprintf;
+		_tborder	= al_tborder;
+		_tgetc		= al_tgetc;
+	} else*/ if (strcmp(options_get("display"), "ncurses") == 0) {
+		_topen		= nc_topen;
+		_tclose		= nc_tclose;
+		_tclear		= nc_tclear;
+		_tflush		= nc_tflush;
+		_tcolor		= nc_tcolor;
+		_tputc		= nc_tputc;
+		_tputs		= nc_tputs;
+		_tprintf	= nc_tprintf;
+		_tborder	= nc_tborder;
+		_tgetc		= nc_tgetc;
 	} else {
-		_topen		= _ttopen;
-		_tclose		= _ttclose;
-		_tclear		= _ttclear;
-		_tflush		= _ttflush;
-		_tcolor		= _ttcolor;
-		_tputc		= _ttputc;
-		_tputs		= _ttputs;
-		_tprintf	= _ttprintf;
-		_tborder	= _ttborder;
-		_tgetc		= _ttgetc;
+		error("no such display mode: %s", options_get("display"));
 	}
-
+	
 	_topen();
 }
 

@@ -1,4 +1,4 @@
-#include "gterm.h"
+#include "al_term.h"
 
 #include "options.h"
 
@@ -26,7 +26,7 @@ static struct {
 	color_t					back;
 } terminal;
 
-void _gtopen(void)
+void al_topen(void)
 {
 	if (al_init() == 0 || al_init_image_addon() == 0) {
 		error("al_init()\n");
@@ -120,7 +120,7 @@ void _gtopen(void)
 	al_set_window_title(terminal.display, title);
 }
 
-void _gtclose(void)
+void al_tclose(void)
 {
 	al_destroy_event_queue(terminal.queue);
 	al_destroy_timer(terminal.timer);
@@ -129,7 +129,7 @@ void _gtclose(void)
 	al_destroy_bitmap(terminal.tileset);
 }
 
-void _gtclear(void)
+void al_tclear(void)
 {
 	unsigned color = palette_get(terminal.back);
 	al_clear_to_color(al_map_rgb(
@@ -139,7 +139,7 @@ void _gtclear(void)
 	);
 }
 
-void _gtflush(void)
+void al_tflush(void)
 {
 	al_hold_bitmap_drawing(0);
 	al_set_target_backbuffer(terminal.display);
@@ -157,13 +157,13 @@ void _gtflush(void)
 	al_hold_bitmap_drawing(1);
 }
 
-void _gtcolor(color_t fore, color_t back)
+void al_tcolor(color_t fore, color_t back)
 {
 	terminal.fore = fore;
 	terminal.back = back;
 }
 
-void _gtputc(int x, int y, char c)
+void al_tputc(int x, int y, char c)
 {
 	if (x < 0 || x >= (int)terminal.window_x
 	 || y < 0 || y >= (int)terminal.window_y) {
@@ -227,7 +227,7 @@ static color_t ch_to_color(char c)
 	}
 }
 
-void _gtputs(int x, int y, char *s)
+void al_tputs(int x, int y, char *s)
 {
 	int ac = 0;
 	char *p = s;
@@ -240,26 +240,26 @@ void _gtputs(int x, int y, char *s)
 	while (*s) {
 		if (*s == '&') {
 			if (*++s == '&') {
-				_gtputc(x++, y, *s++);
+				al_tputc(x++, y, *s++);
 			} else {
-				_gtcolor(ch_to_color(*s++), terminal.back);
+				al_tcolor(ch_to_color(*s++), terminal.back);
 			}
 		} else {
-			_gtputc(x++, y, *s++);
+			al_tputc(x++, y, *s++);
 		}
 	}
 }
 
-void _gtprintf(int x, int y, char *fmt, va_list args)
+void al_tprintf(int x, int y, char *fmt, va_list args)
 {
 	static char s[256];
 	vsnprintf(s, 255, fmt, args);
 
-	_gtputs(x, y, s);
+	al_tputs(x, y, s);
 }
 
 // TODO: rewrite this
-static void _gtprintfs(int x, int y, char *fmt, ...)
+static void al_tprintfs(int x, int y, char *fmt, ...)
 {
 	static char s[256];
 
@@ -268,10 +268,10 @@ static void _gtprintfs(int x, int y, char *fmt, ...)
 	vsnprintf(s, 255, fmt, args);
 	va_end(args);
 
-	_gtputs(x, y, s);
+	al_tputs(x, y, s);
 }
 
-void _gtborder(int x, int y, int w, int h, char *t, char *b)
+void al_tborder(int x, int y, int w, int h, char *t, char *b)
 {
 	if (w == -1) {
 		w = tx - 1;
@@ -289,35 +289,35 @@ void _gtborder(int x, int y, int w, int h, char *t, char *b)
 		y = ty / 2 - h / 2;
 	}
 
-	_gtputc(x    , y    , '\xDA');
-	_gtputc(x + w, y    , '\xBF');
-	_gtputc(x + w, y + h, '\xD9');
-	_gtputc(x    , y + h, '\xC0');
+	al_tputc(x    , y    , '\xDA');
+	al_tputc(x + w, y    , '\xBF');
+	al_tputc(x + w, y + h, '\xD9');
+	al_tputc(x    , y + h, '\xC0');
 	for (int i = x + 1; i < x + w; i++) {
-		_gtputc(i, y    , '\xC4');
-		_gtputc(i, y + h, '\xC4');
+		al_tputc(i, y    , '\xC4');
+		al_tputc(i, y + h, '\xC4');
 	}
 
 	for (int i = y + 1; i < y + h; i++) {
-		_gtputc(x    , i, '\xB3');
-		_gtputc(x + w, i, '\xB3');
+		al_tputc(x    , i, '\xB3');
+		al_tputc(x + w, i, '\xB3');
 	}
 
 	for (int X = x + 1; X < x + w; X++) {
 		for (int Y = y + 1; Y < y + h; Y++) {
-			_gtputc(X, Y, ' ');
+			al_tputc(X, Y, ' ');
 		}
 	}
 
 	if (t) {
 		const int l = strlen(t) + 4;
-		_gtprintfs(x + w / 2 - l / 2 + 1, y,
+		al_tprintfs(x + w / 2 - l / 2 + 1, y,
 			"\xAE &Y%s&W \xAF", t);
 	}
 
 	if (b) {
 		const int l = strlen(b) + 4;
-		_gtprintfs(x + w / 2 - l / 2, y + h, 
+		al_tprintfs(x + w / 2 - l / 2, y + h, 
 			"\xAE &Y%s&W \xAF", b);
 	}
 }
@@ -356,7 +356,7 @@ static int convert_unicode(int code)
 	}
 }
 
-int _gtgetc(void)
+int al_tgetc(void)
 {
 	ALLEGRO_EVENT event;
 	al_wait_for_event(terminal.queue, &event);

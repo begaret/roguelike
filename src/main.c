@@ -7,9 +7,9 @@
 
 #include <stdlib.h>
 
-#ifdef __APPLE__
-	#include <allegro5/allegro.h>
-#endif
+// #ifdef __APPLE__
+//	#include <allegro5/allegro.h>
+// #endif
 
 void quit(void)
 {

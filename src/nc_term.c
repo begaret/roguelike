@@ -1,4 +1,4 @@
-#include "tterm.h"
+#include "nc_term.h"
 
 #include "options.h"
 
@@ -10,7 +10,7 @@
 
 static int escdelay = 0;
 
-void _ttopen(void)
+void nc_topen(void)
 {
 	setlocale(LC_ALL, "");
 	initscr();
@@ -33,7 +33,7 @@ void _ttopen(void)
 	set_escdelay(0);
 }
 
-void _ttclose(void)
+void nc_tclose(void)
 {
 	set_escdelay(escdelay);
 
@@ -45,12 +45,12 @@ void _ttclose(void)
 	endwin();
 }
 
-void _ttclear(void)
+void nc_tclear(void)
 {
 	erase();
 }
 
-void _ttflush(void)
+void nc_tflush(void)
 {
 	refresh();
 }
@@ -81,7 +81,7 @@ static color_t convert_color(color_t color)
 	}
 }
 
-void _ttcolor(color_t fore, color_t back)
+void nc_tcolor(color_t fore, color_t back)
 {
 	attron(COLOR_PAIR((convert_color(back) | (convert_color(fore) << 4)) + 1));
 }
@@ -101,7 +101,7 @@ static char *convert_char(char c)
 	return wc;
 }
 
-void _ttputc(int x, int y, char c)
+void nc_tputc(int x, int y, char c)
 {
 	if (c >= 0x20 && c <= 0x7E) {
 		mvaddch(y, x, c);
@@ -136,7 +136,7 @@ static color_t ch_to_color(char c)
 	}
 }
 
-void _ttputs(int x, int y, char *s)
+void nc_tputs(int x, int y, char *s)
 {
 	int ac = 0;
 	char *p = s;
@@ -149,26 +149,26 @@ void _ttputs(int x, int y, char *s)
 	while (*s) {
 		if (*s == '&') {
 			if (*++s == '&') {
-				_ttputc(x++, y, *s++);
+				nc_tputc(x++, y, *s++);
 			} else {
-				_ttcolor(ch_to_color(*s++), C_BLACK);
+				nc_tcolor(ch_to_color(*s++), C_BLACK);
 			}
 		} else {
-			_ttputc(x++, y, *s++);
+			nc_tputc(x++, y, *s++);
 		}
 	}
 }
 
-void _ttprintf(int x, int y, char *fmt, va_list args)
+void nc_tprintf(int x, int y, char *fmt, va_list args)
 {
 	static char s[256];
 	vsnprintf(s, 255, fmt, args);
 
-	_ttputs(x, y, s);
+	nc_tputs(x, y, s);
 }
 
 // TODO: rewrite this
-static void _ttprintfs(int x, int y, char *fmt, ...)
+static void nc_tprintfs(int x, int y, char *fmt, ...)
 {
 	static char s[256];
 
@@ -177,10 +177,10 @@ static void _ttprintfs(int x, int y, char *fmt, ...)
 	vsnprintf(s, 255, fmt, args);
 	va_end(args);
 
-	_ttputs(x, y, s);
+	nc_tputs(x, y, s);
 }
 
-void _ttborder(int x, int y, int w, int h, char *t, char *b)
+void nc_tborder(int x, int y, int w, int h, char *t, char *b)
 {
 	if (w == -1) {
 		w = tx - 1;
@@ -198,35 +198,35 @@ void _ttborder(int x, int y, int w, int h, char *t, char *b)
 		y = ty / 2 - h / 2;
 	}
 
-	_ttputc(x    , y    , '\xDA');
-	_ttputc(x + w, y    , '\xBF');
-	_ttputc(x + w, y + h, '\xD9');
-	_ttputc(x    , y + h, '\xC0');
+	nc_tputc(x    , y    , '\xDA');
+	nc_tputc(x + w, y    , '\xBF');
+	nc_tputc(x + w, y + h, '\xD9');
+	nc_tputc(x    , y + h, '\xC0');
 	for (int i = x + 1; i < x + w; i++) {
-		_ttputc(i, y    , '\xC4');
-		_ttputc(i, y + h, '\xC4');
+		nc_tputc(i, y    , '\xC4');
+		nc_tputc(i, y + h, '\xC4');
 	}
 
 	for (int i = y + 1; i < y + h; i++) {
-		_ttputc(x    , i, '\xB3');
-		_ttputc(x + w, i, '\xB3');
+		nc_tputc(x    , i, '\xB3');
+		nc_tputc(x + w, i, '\xB3');
 	}
 
 	for (int X = x + 1; X < x + w; X++) {
 		for (int Y = y + 1; Y < y + h; Y++) {
-			_ttputc(X, Y, ' ');
+			nc_tputc(X, Y, ' ');
 		}
 	}
 
 	if (t) {
 		const int l = strlen(t) + 4;
-		_ttprintfs(x + w / 2 - l / 2 + 1, y,
+		nc_tprintfs(x + w / 2 - l / 2 + 1, y,
 			"\xAE &Y%s&W \xAF", t);
 	}
 
 	if (b) {
 		const int l = strlen(b) + 4;
-		_ttprintfs(x + w / 2 - l / 2, y + h, 
+		nc_tprintfs(x + w / 2 - l / 2, y + h, 
 			"\xAE &Y%s&W \xAF", b);
 	}
 }
@@ -250,7 +250,7 @@ static int convert_key(int k)
 	}
 }
 
-int _ttgetc(void)
+int nc_tgetc(void)
 {
 	return convert_key(getch());
 }

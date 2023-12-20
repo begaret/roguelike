@@ -7,7 +7,7 @@
 #define DEFAULT_WINDOW_X 80
 #define DEFAULT_WINDOW_Y 25
 #define DEFAULT_WINDOWED 1
-#define DEFAULT_DISPLAY	 1
+#define DEFAULT_DISPLAY	 "opengl"
 
 static config_t options_cfg = {0};
 
@@ -23,7 +23,7 @@ static FILE *create_options(void)
 	fprintf(fp, "window_x[%i]\n",	DEFAULT_WINDOW_X);
 	fprintf(fp, "window_y[%i]\n",	DEFAULT_WINDOW_Y);
 	fprintf(fp, "windowed[%i]\n",	DEFAULT_WINDOWED);
-	fprintf(fp, "display[%i]\n",	DEFAULT_DISPLAY);
+	fprintf(fp, "display[%s]\n",	DEFAULT_DISPLAY);
 
 	fclose(fp);
 
