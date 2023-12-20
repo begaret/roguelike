@@ -93,6 +93,12 @@ void gl_topen(void)
 		error("glewInit(): %s", glewGetErrorString(err));
 	}
 
+	if (!atoi(options_get("windowed"))) {
+		SDL_GetWindowSize(terminal.window, &terminal.display_x, &terminal.display_y);
+		terminal.window_x = terminal.display_x / (terminal.tileset_x / 32);
+		terminal.window_y = terminal.display_y / (terminal.tileset_y /  8);
+	}
+
 	terminal.curr_v = 0;
 	terminal.curr_i = 0;
 
