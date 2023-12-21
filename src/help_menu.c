@@ -10,7 +10,7 @@
 // TODO: add scrolling and make prettier
 void help_menu(void)
 {
-	FILE *fp = fopen("help.txt", "r");
+	FILE *fp = fopen("data/text/help.txt", "r");
 	if (fp == NULL) {
 		return;
 	}

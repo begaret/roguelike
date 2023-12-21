@@ -1,7 +1,0 @@
-&w-------- &Wmenus &w--------
-&Yvi-keys&w - &Cmovement
-&Yenter&w   - &Cselect
-
-&w-------- &Wgame  &w--------
-&Yvi-keys&w - &Cmovement
-&Yescape&w  - &Cpause

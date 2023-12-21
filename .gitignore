@@ -1,5 +1,6 @@
 int/
 bin/
+data/
 ibm_*.bmp
 *.png
 bleak.txt
@@ -7,7 +8,7 @@ bright.txt
 tarot.txt
 options.txt
 .DS_Store
-.tar.gz
+.zip
 
-al_term.*
+src/al_term.*
 

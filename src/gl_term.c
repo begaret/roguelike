@@ -128,7 +128,7 @@ void gl_topen(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * MAX_IDX, terminal.i, GL_STATIC_DRAW);
 
 	char *vsource;
-	FILE *fp = fopen("shader.vs", "r");
+	FILE *fp = fopen("data/shaders/shader.vs", "r");
 	fseek(fp, 0, SEEK_END);
 	int l = ftell(fp);
 	rewind(fp);
@@ -139,7 +139,7 @@ void gl_topen(void)
 	fclose(fp);
 
 	char *psource;
-	fp = fopen("shader.ps", "r");
+	fp = fopen("data/shaders/shader.ps", "r");
 	fseek(fp, 0, SEEK_END);
 	l = ftell(fp);
 	rewind(fp);

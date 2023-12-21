@@ -19,7 +19,6 @@ LIB=\
 endif
 INC=-Iinclude/
 
-RES=colors.txt curses.bmp
 APP=bin/roguelike-v0.0.0
 OUT=bin/main
 
@@ -32,16 +31,20 @@ all: dirs $(APP)
 
 dirs:
 ifeq ($(wildcard bin/*),)
-	mkdir bin/
+	mkdir -p bin/
 endif
 ifeq ($(wildcard int/*),)
-	mkdir int/
+	mkdir -p int/
 endif
-
+ifeq ($(wildcard data/*),)
+	mkdir -p data/
+endif
 
 $(APP): $(OUT)
 	mkdir -p $(APP)/
-	cp $(OUT) $(RES) $(APP)/
+	find data | cpio -pdm $(APP)/
+	cp $(OUT) $(APP)/
+	zip -qr $(APP){.zip,}
 
 $(OUT): $(OBJ)
 	$(CC) $(OBJ) -o $@ $(LIB) # -fsanitize=address

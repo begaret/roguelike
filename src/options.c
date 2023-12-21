@@ -2,8 +2,8 @@
 
 #include "config.h"
 
-#define DEFAULT_TILESET  "curses.bmp"
-#define DEFAULT_PALETTE	 "colors.txt"
+#define DEFAULT_TILESET  "data/tileset/curses.bmp"
+#define DEFAULT_PALETTE	 "data/text/colors.txt"
 #define DEFAULT_WINDOW_X 80
 #define DEFAULT_WINDOW_Y 25
 #define DEFAULT_WINDOWED 1
@@ -13,7 +13,7 @@ static config_t options_cfg = {0};
 
 static FILE *create_options(void)
 {
-	FILE *fp = fopen("options.txt", "w");
+	FILE *fp = fopen("data/text/options.txt", "w");
 	if (fp == NULL) {
 		return NULL;
 	}
@@ -27,12 +27,12 @@ static FILE *create_options(void)
 
 	fclose(fp);
 
-	return fopen("options.txt", "r");
+	return fopen("data/text/options.txt", "r");
 }
 
 void options_init(void)
 {
-	FILE *fp = fopen("options.txt", "r");
+	FILE *fp = fopen("data/text/options.txt", "r");
 	if (fp == NULL) {
 		fp = create_options();
 	}

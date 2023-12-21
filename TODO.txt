@@ -6,6 +6,7 @@
 * add dll/plugin for backend libraries?
 * rewrite OpenGL backend
 * fix flashing in popups
+* shorten paths in options
 
 ----- future -----
 scrolling map
